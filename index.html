@@ -15,11 +15,12 @@
             <span class="logo">Tor<span>Alza</span>Key</span>
             <a class="nav-link" href="#generator">Генератор</a>
             <a class="nav-link" href="#validator">Проверка</a>
+            <a class="nav-link" href="#submission">Публикация</a>
             <a class="nav-link" href="#developers">Для разработчиков</a>
         </nav>
         <div class="hero-content">
-            <h1>Платформа ключей для Tor Alza</h1>
-            <p>Минималистичный, но мощный инструментарий, который помогает генерировать, проверять и интегрировать ключи активации в ваши проекты.</p>
+            <h1>TorAlza — ключи для скриптов Delta</h1>
+            <p>Минималистичный, но мощный инструментарий, который помогает разработчикам Delta Roblox выпускать скрипты с обязательной активацией через ключ.</p>
             <div class="hero-actions">
                 <a class="button primary" href="#generator">Создать ключ</a>
                 <a class="button" href="#docs">Документация</a>
@@ -36,7 +37,7 @@
         <section id="generator" class="panel">
             <div class="panel-header">
                 <h2>Генерация ключей</h2>
-                <p>Создавайте ключи в формате <code>tor-alzaXXXXXXXXXXXX</code> с мгновенной копией в буфер обмена.</p>
+                <p>Создавайте ключи в формате <code>tor-alzaXXXXXXXXXXXX</code> с мгновенной копией в буфер обмена. Такие ключи затем указываются пользователем при первом запуске скрипта.</p>
             </div>
             <div class="generator-grid">
                 <div class="generator-display">
@@ -76,7 +77,7 @@
         <section id="validator" class="panel">
             <div class="panel-header">
                 <h2>Проверка ключей</h2>
-                <p>Вставьте ключ, чтобы убедиться, что он соответствует стандарту Tor Alza и готов к публикации.</p>
+                <p>Вставьте ключ, чтобы убедиться, что он соответствует стандарту Tor Alza и готов к публикации в вашем скрипте.</p>
             </div>
             <form id="validatorForm" class="validator-form">
                 <div class="field">
@@ -92,10 +93,48 @@
             <div id="validatorResult" class="validator-result" role="status" aria-live="polite"></div>
         </section>
 
+        <section id="submission" class="panel">
+            <div class="panel-header">
+                <h2>Публикация скрипта</h2>
+                <p>Зарегистрируйте свой скрипт, чтобы связать репозиторий, ключи и автоматическую активацию для пользователей Delta.</p>
+            </div>
+            <form id="scriptForm" class="script-form">
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="scriptName">Название скрипта</label>
+                        <input id="scriptName" type="text" placeholder="TorAlza Delta UI" required />
+                    </div>
+                    <div class="field">
+                        <label for="scriptRepo">GitHub / GitLab репозиторий</label>
+                        <input id="scriptRepo" type="url" placeholder="https://github.com/username/project" required />
+                    </div>
+                    <div class="field">
+                        <label for="scriptWebhook">URL вебхука проверки</label>
+                        <input id="scriptWebhook" type="url" placeholder="https://api.yourdomain.dev/activate" />
+                    </div>
+                    <div class="field">
+                        <label for="scriptKey">Базовый ключ для теста</label>
+                        <input id="scriptKey" type="text" placeholder="tor-alzaSk3isJ3ns92nzkE2jaE2ndO" required />
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="scriptNotes">Как скрипт использует ключ</label>
+                    <textarea id="scriptNotes" rows="3" placeholder="Введите описание или инструкцию для ревью команды"></textarea>
+                </div>
+                <button class="button primary" type="submit">Зарегистрировать скрипт</button>
+            </form>
+            <div id="scriptResult" class="script-result" role="status" aria-live="polite"></div>
+            <ul class="submission-hints">
+                <li>Используйте отдельный ключ для QA, чтобы проверить активацию перед релизом.</li>
+                <li>Добавьте GitHub Actions, который генерирует ключ и сохраняет его как секрет, чтобы автоматически рассылать его при релизе.</li>
+                <li>Вебхук необязателен: если не указать URL, пользователи смогут активироваться через публичное API TorAlza.</li>
+            </ul>
+        </section>
+
         <section id="developers" class="panel">
             <div class="panel-header">
                 <h2>Платформа для разработчиков</h2>
-                <p>Создано для команд, которые хотят автоматизировать выдачу ключей и привязку их к релизам.</p>
+                <p>Создано для команд, которые хотят автоматизировать выдачу ключей, привязку к репозиторию и проверку ключа внутри скрипта Delta.</p>
             </div>
             <div class="cards-grid">
                 <article class="card">
@@ -117,7 +156,7 @@ Authorization: Bearer &lt;secret&gt;
                 </article>
                 <article class="card">
                     <h3>Проверка скриптов</h3>
-                    <p>Разместите скрипт в GitHub и добавьте файл <code>tor-alza.json</code>, чтобы автоматически активировать ключ через вебхук.</p>
+                    <p>Разместите скрипт в GitHub и добавьте файл <code>tor-alza.json</code>, чтобы автоматически активировать ключ через вебхук и документировать требуемые параметры.</p>
                     <pre><code>{
   "key": "tor-alza...",
   "activation": "github",
@@ -126,33 +165,74 @@ Authorization: Bearer &lt;secret&gt;
 }</code></pre>
                 </article>
             </div>
+            <div class="developer-instructions">
+                <h3>Что добавить в ваш скрипт Delta</h3>
+                <div class="instruction-grid">
+                    <div>
+                        <h4>1. Запрос ключа у пользователя</h4>
+                        <p>При первом запуске предложите ввести ключ, полученный на сайте TorAlza. Сохраните его локально, чтобы не спрашивать повторно.</p>
+                    </div>
+                    <div>
+                        <h4>2. Проверка через TorAlza API</h4>
+                        <p>Используйте HTTP-запрос к <code>https://api.tor-alza.dev/v1/keys/verify</code>, чтобы убедиться, что ключ активен и привязан к вашему репозиторию.</p>
+                    </div>
+                    <div>
+                        <h4>3. Обработка ошибок</h4>
+                        <p>Если ключ невалиден или истёк, заблокируйте доступ к функционалу и покажите пользователю инструкцию о том, где получить новый ключ.</p>
+                    </div>
+                </div>
+                <pre class="code-block"><code>-- Пример проверки ключа в Delta (Lua)
+local http = game:GetService("HttpService")
+local key = getgenv().TORALZA_KEY or ""
+
+if key == "" then
+    error("TorAlza: ключ не найден. Получите его на tor-alza.dev")
+end
+
+local response = http:PostAsync(
+    "https://api.tor-alza.dev/v1/keys/verify",
+    http:JSONEncode({ key = key, resource = "github:username/project" }),
+    Enum.HttpContentType.ApplicationJson
+)
+
+local data = http:JSONDecode(response)
+if not data.valid then
+    error("TorAlza: ключ не прошёл проверку")
+end
+</code></pre>
+                <ol class="instruction-steps">
+                    <li>Сохраните ключ в <code>getgenv().TORALZA_KEY</code> или аналогичном контейнере.</li>
+                    <li>Обновляйте параметр <code>resource</code>, чтобы он соответствовал вашему репозиторию или имени скрипта.</li>
+                    <li>Добавьте логирование в Discord/Analytics, чтобы отслеживать активации.</li>
+                </ol>
+            </div>
         </section>
 
         <section id="docs" class="panel panel--subtle">
             <div class="panel-header">
                 <h2>Как это работает</h2>
-                <p>Простая архитектура, которую легко расширить под ваши процессы.</p>
+                <p>Простая архитектура, которую легко расширить под ваши процессы публикации скриптов Delta.</p>
             </div>
             <div class="timeline">
                 <div class="timeline-step">
                     <span class="step">1</span>
                     <div>
-                        <h3>Создание ключа</h3>
-                        <p>Генерируйте ключи вручную через интерфейс или автоматически через API. Каждому ключу можно задать метаданные и срок действия.</p>
+                        <h3>Регистрация скрипта</h3>
+                        <p>Заполните форму публикации выше, чтобы связать репозиторий, вебхук и тестовый ключ. После подтверждения скрипт появится в кабинете разработчика.</p>
                     </div>
                 </div>
                 <div class="timeline-step">
                     <span class="step">2</span>
                     <div>
-                        <h3>Публикация скрипта</h3>
-                        <p>Загрузите скрипт в GitHub и добавьте конфигурацию для проверки ключей. Платформа сама подписывает релизы и проверяет соответствие.</p>
+                        <h3>Создание ключа</h3>
+                        <p>Генерируйте ключи вручную через интерфейс или автоматически через API. Храните их в секции секретов репозитория и передавайте пользователям после покупки или подписки.</p>
                     </div>
                 </div>
                 <div class="timeline-step">
                     <span class="step">3</span>
                     <div>
                         <h3>Активация</h3>
-                        <p>При обращении к скрипту платформа сверяет ключ, фиксирует активацию и выдаёт статус. История доступна в личном кабинете разработчика.</p>
+                        <p>При обращении к скрипту платформа сверяет ключ, фиксирует активацию и выдаёт статус. История доступна в личном кабинете разработчика, а пользователи получают мгновенную обратную связь.</p>
                     </div>
                 </div>
             </div>

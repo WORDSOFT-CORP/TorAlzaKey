@@ -259,7 +259,8 @@ input[type="range"] {
 }
 
 input[type="text"],
-input[type="url"] {
+input[type="url"],
+textarea {
     width: 100%;
     padding: 14px 16px;
     border-radius: 14px;
@@ -270,7 +271,8 @@ input[type="url"] {
     transition: border 0.2s ease, box-shadow 0.2s ease;
 }
 
-input:focus {
+input:focus,
+textarea:focus {
     outline: none;
     border-color: var(--accent);
     box-shadow: 0 0 0 4px rgba(124, 92, 255, 0.15);
@@ -341,6 +343,106 @@ input:focus {
 .validator-result.error {
     border-color: rgba(255, 99, 132, 0.5);
     background: rgba(255, 99, 132, 0.12);
+}
+
+.script-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.form-grid {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.script-result {
+    margin-top: 16px;
+    padding: 20px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.script-result.success,
+.script-result.error {
+    display: flex;
+}
+
+.script-result.success {
+    border-color: rgba(80, 220, 130, 0.45);
+    background: rgba(35, 180, 120, 0.12);
+}
+
+.script-result.error {
+    border-color: rgba(255, 99, 132, 0.5);
+    background: rgba(255, 99, 132, 0.12);
+}
+
+.submission-hints {
+    margin-top: 24px;
+    display: grid;
+    gap: 12px;
+    padding-left: 20px;
+    color: var(--text-muted);
+}
+
+.submission-hints li::marker {
+    color: var(--accent);
+}
+
+.developer-instructions {
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.instruction-grid {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.instruction-grid h4 {
+    margin: 0;
+    font-size: 1.05rem;
+}
+
+.instruction-grid p {
+    margin: 8px 0 0;
+    color: var(--text-muted);
+}
+
+.code-block {
+    background: rgba(10, 12, 18, 0.9);
+    border: 1px solid rgba(124, 92, 255, 0.2);
+    border-radius: 16px;
+    padding: 20px;
+    overflow-x: auto;
+    font-size: 0.85rem;
+    line-height: 1.6;
+}
+
+.instruction-steps {
+    margin: 0;
+    padding-left: 20px;
+    display: grid;
+    gap: 8px;
+    color: var(--text-muted);
+}
+
+.instruction-steps li::marker {
+    color: var(--accent);
 }
 
 .cards-grid {

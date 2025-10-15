@@ -14,6 +14,8 @@ const lengthValueEl = document.getElementById("lengthValue");
 const historyListEl = document.getElementById("historyList");
 const validatorForm = document.getElementById("validatorForm");
 const validatorResult = document.getElementById("validatorResult");
+const scriptForm = document.getElementById("scriptForm");
+const scriptResult = document.getElementById("scriptResult");
 
 function randomSequence(length, charset) {
   const array = new Uint32Array(length);
@@ -80,6 +82,17 @@ function renderValidationResult({ success, message, details }) {
   `;
 }
 
+function renderScriptResult({ success, message, details }) {
+  if (!scriptResult) return;
+  scriptResult.classList.remove("success", "error");
+  scriptResult.classList.add(success ? "success" : "error");
+  scriptResult.innerHTML = `
+    <strong>${success ? "Скрипт сохранён" : "Ошибка регистрации"}</strong>
+    <span>${message}</span>
+    ${details ? `<small>${details}</small>` : ""}
+  `;
+}
+
 function handleValidationSubmit(event) {
   event.preventDefault();
   const key = document.getElementById("keyInput")?.value.trim();
@@ -112,6 +125,48 @@ function handleValidationSubmit(event) {
   });
 }
 
+function handleScriptSubmit(event) {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const scriptName = document.getElementById("scriptName")?.value.trim();
+  const scriptRepo = document.getElementById("scriptRepo")?.value.trim();
+  const scriptWebhook = document.getElementById("scriptWebhook")?.value.trim();
+  const scriptKey = document.getElementById("scriptKey")?.value.trim();
+  const scriptNotes = document.getElementById("scriptNotes")?.value.trim();
+
+  if (!scriptName || !scriptRepo || !scriptKey) {
+    renderScriptResult({
+      success: false,
+      message: "Заполните обязательные поля: название, репозиторий и тестовый ключ."
+    });
+    return;
+  }
+
+  if (!validateKeyFormat(scriptKey)) {
+    renderScriptResult({
+      success: false,
+      message: "Тестовый ключ должен соответствовать формату tor-alza."
+    });
+    return;
+  }
+
+  const details = [
+    `Репозиторий: ${scriptRepo}`,
+    scriptWebhook ? `Вебхук проверки: ${scriptWebhook}` : "Вебхук не указан — будет использовано облачное API TorAlza.",
+    scriptNotes ? `Описание: ${scriptNotes}` : "Добавьте инструкцию, чтобы команда ревью быстрее одобрила публикацию."
+  ].join("<br>");
+
+  renderScriptResult({
+    success: true,
+    message: `Черновик скрипта «${scriptName}» сохранён. Наша команда проверит подключение ключей в течение 24 часов.`,
+    details
+  });
+
+  if (form instanceof HTMLFormElement) {
+    form.reset();
+  }
+}
+
 function init() {
   if (lengthValueEl && keyLengthEl) {
     lengthValueEl.textContent = keyLengthEl.value;
@@ -131,6 +186,7 @@ function init() {
   copyButton?.addEventListener("click", copyKey);
 
   validatorForm?.addEventListener("submit", handleValidationSubmit);
+  scriptForm?.addEventListener("submit", handleScriptSubmit);
 }
 
 document.addEventListener("DOMContentLoaded", init);
